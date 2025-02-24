@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="512px" height="512px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">
+<rect x="0" fill="#1976D2" width="512" height="512"/>
+<g>
+	<rect x="192.85" y="35.386" fill="#FFFFFF" width="130.796" height="128.495"/>
+	<rect x="35.887" y="184.856" fill="#FFFFFF" width="135.988" height="130.795"/>
+	<rect x="192.85" y="184.856" fill="#FFFFFF" width="130.796" height="130.795"/>
+	<rect x="344.62" y="184.856" fill="#FFFFFF" width="135.492" height="130.795"/>
+	<rect x="192.85" y="336.627" fill="#FFFFFF" width="130.796" height="142.987"/>
+	<path fill="#FFFFFF" d="M171.875,336.627H35.887v111.524c0,17.377,14.087,31.463,31.462,31.463h104.526V336.627L171.875,336.627z"
+		/>
+	<path fill="#FFFFFF" d="M344.62,163.88h135.492V66.849c0-17.376-14.086-31.462-31.463-31.462H344.62V163.88z"/>
+	<path fill="#FFFFFF" d="M344.62,336.627v142.987H448.65c17.377,0,31.463-14.086,31.463-31.463V336.627H344.62z"/>
+	<path fill="#FFFFFF" d="M171.875,163.88V35.386H67.349c-17.376,0-31.462,14.087-31.462,31.462v97.031h135.988V163.88z"/>
+</g>
+<text transform="matrix(1 0 0 1 211.5071 297.3018)" fill="#1976D2" font-family="'BritannicBold'" font-size="134.1657">G</text>
+</svg>
