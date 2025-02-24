@@ -7,7 +7,7 @@
         </q-avatar>
         <q-toolbar-title> LaserGRBL Grid Tool </q-toolbar-title>
 
-        <div>v 0.0.1</div>
+        <div>v{{ $appVersion }}</div>
       </q-toolbar>
     </q-header>
 

@@ -1,8 +1,8 @@
 {
-  "name": "LGH",
+  "name": "LGT",
   "version": "0.0.1",
-  "description": "LaserGRBL Grid Helper",
-  "productName": "Tools",
+  "description": "LaserGRBL Grid Tool",
+  "productName": "LaserGRBL Grid Tool",
   "author": "Jay Hsu <jayh0324@gmail.com>",
   "type": "module",
   "private": true,

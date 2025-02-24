@@ -30,12 +30,36 @@
         <input
           type="file"
           ref="shareFileRef"
-          accept=".nc"
           style="display: none"
+          accept=".nc"
           @change="handleShareFileUpload"
         />
-        <q-btn label="統一NC檔" color="primary" class="q-mb-sm full-width" @click="openShareFile" />
-        <q-btn label="合併G碼" color="primary" class="q-mb-sm full-width" @click="writeNCFile()" />
+        <q-btn
+          label="統一NC檔"
+          color="primary"
+          class="q-mb-sm full-width"
+          @click="openShareFile"
+          :loading="isProcessingUpload"
+        >
+          {{ buttonUploadLabel }}
+          <template v-slot:loading>
+            <q-spinner-hourglass class="on-left" />
+            處理中...
+          </template>
+        </q-btn>
+        <q-btn
+          label="合併G碼"
+          color="primary"
+          class="q-mb-sm full-width"
+          @click="writeNCFile()"
+          :loading="isProcessing"
+        >
+          {{ buttonLabel }}
+          <template v-slot:loading>
+            <q-spinner-hourglass class="on-left" />
+            處理中...
+          </template>
+        </q-btn>
         <q-btn
           label="模擬G碼"
           color="primary"
@@ -168,8 +192,12 @@
           <div class="text-h6">G碼模擬路徑</div>
         </q-card-section>
 
-        <q-card-section>
-          <GCodeViewer :gcode="gcodeText" />
+        <q-card-section class="column flex-center">
+          <GCodeViewer
+            :gcode="gcodeText"
+            @progress-updated="handleProgressUpdated"
+            @processing-complete="handleProcessingComplete"
+          />
         </q-card-section>
 
         <q-card-actions class="close-btn">
@@ -181,6 +209,7 @@
 </template>
 
 <script>
+import { useQuasar } from 'quasar'
 import GCodeViewer from 'components/GCodeViewer.vue'
 
 export default {
@@ -189,6 +218,7 @@ export default {
   },
   data() {
     return {
+      $q: useQuasar(),
       row: 0,
       col: 0,
       row_offset: 0,
@@ -206,40 +236,98 @@ export default {
       showGSD: false,
       gcodeText: '',
       outputContent: '',
+      progress: 0, // 進度值（0 到 1）
+      isProcessing: false, // 控制是否顯示加載狀態
+      isProcessingUpload: false,
     }
+  },
+  computed: {
+    buttonLabel() {
+      return this.isProcessing ? '合併G碼中...' : ''
+    },
+    buttonUploadLabel() {
+      return this.isProcessingUpload ? '上傳布局中...' : ''
+    },
   },
   mounted() {
     this.fileName = `${this.fileNameDefault}_${this.row}x${this.col}.nc`
   },
   methods: {
+    // 處理進度更新事件
+    handleProgressUpdated(progress) {
+      this.progress = progress
+    },
+    // 模擬完成事件
+    handleProcessingComplete() {
+      this.$q.notify({
+        type: 'positive',
+        message: '模擬完成！',
+      })
+    },
     openShareFile() {
+      //重製檔案
+      this.shareFile = {}
       this.$refs.shareFileRef.click()
     },
     handleShareFileUpload(event) {
+      this.isProcessingUpload = true // 開始處理，顯示加載狀態
+      this.$q.notify({
+        type: 'warning',
+        message: '布局中...',
+      })
+
+      // 等待 UI 更新完成
+      setTimeout(async () => {
+        this.processShareFileUpload(event)
+      }, 100)
+    },
+
+    async processShareFileUpload(event) {
       const file = event.target.files[0]
-      if (!file) return
+      if (!file) {
+        this.$q.notify({
+          type: 'negative',
+          message: '沒有選擇檔案！',
+        })
+        this.isProcessingUpload = false // 處理結束，隱藏加載狀態
+        return
+      }
 
       const reader = new FileReader()
       this.shareFile.fileName = file.name
 
-      reader.onload = (e) => {
-        // 將讀取的檔案內容存到共用變數中
-        this.shareFile.content = e.target.result
+      try {
+        reader.onload = (e) => {
+          // 將讀取的檔案內容存到共用變數中
+          this.shareFile.content = e.target.result
 
-        // 把資料帶入所有的項目中
-        this.files.forEach((row, row_index) => {
-          row.forEach((col, col_index) => {
-            // 更新每個項目的屬性
-            col.fileName = this.shareFile.fileName
-            col.content = this.shareFile.content
-            col.row = row_index
-            col.col = col_index
-            col.contentEdit = this.modifyGCode(col) // 假設 modifyGCode 是一個處理內容的方法
+          // 把資料帶入所有的項目中
+          this.files.forEach((row, row_index) => {
+            row.forEach((col, col_index) => {
+              // 更新每個項目的屬性
+              col.fileName = this.shareFile.fileName
+              col.content = this.shareFile.content
+              col.row = row_index
+              col.col = col_index
+              col.contentEdit = this.modifyGCode(col) // 假設 modifyGCode 是一個處理內容的方法
+            })
           })
-        })
-      }
+        }
 
-      reader.readAsText(file)
+        reader.readAsText(file)
+      } catch (error) {
+        this.$q.notify({
+          type: 'negative',
+          message: '布局失敗：' + error.message,
+        })
+        this.isProcessingUpload = false // 處理結束，隱藏加載狀態
+      } finally {
+        this.$q.notify({
+          type: 'positive',
+          message: '布局完成！',
+        })
+        this.isProcessingUpload = false // 處理結束，隱藏加載狀態
+      }
     },
 
     createGrid() {
@@ -320,9 +408,35 @@ export default {
 
     //產出檔案
     async writeNCFile() {
-      await this.updateGCode()
-      await this.combineGCode()
-      // this.gCodeSimulate('open', { content: this.outputContent })
+      this.isProcessing = true // 開始處理，顯示加載狀態
+      this.$q.notify({
+        type: 'warning',
+        message: '合併中...',
+      })
+
+      // 等待 UI 更新完成
+      setTimeout(async () => {
+        this.processCombineFileProcess()
+      }, 100)
+    },
+    async processCombineFileProcess() {
+      try {
+        // 模擬一個耗時的操作
+        await this.updateGCode()
+        await this.combineGCode()
+      } catch (error) {
+        this.$q.notify({
+          type: 'negative',
+          message: '合併失敗：' + error.message,
+        })
+        this.isProcessingUpload = false // 處理結束，隱藏加載狀態
+      } finally {
+        this.$q.notify({
+          type: 'positive',
+          message: '合併完成！',
+        })
+        this.isProcessing = false // 處理結束，隱藏加載狀態
+      }
     },
 
     //合併編輯後的G碼

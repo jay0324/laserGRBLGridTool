@@ -1,5 +1,14 @@
 <template>
-  <canvas ref="canvas" class="gcode-viewer"></canvas>
+  <div class="full-height full-width column flex-center">
+    <!-- 載入訊息的 div -->
+    <div v-if="isProcessing" class="column flex-center q-mb-md absolute-center">
+      <q-linear-progress :value="progress" class="q-mt-md" style="width: 300px" />
+      <q-banner class="bg-blue-1 q-mt-md"> 處理進度：{{ Math.round(progress * 100) }}% </q-banner>
+    </div>
+
+    <!-- Canvas 元素 -->
+    <canvas ref="canvas" class="gcode-viewer"></canvas>
+  </div>
 </template>
 
 <script>
@@ -13,6 +22,8 @@ export default {
   },
   data() {
     return {
+      isProcessing: false, // 是否正在處理
+      progress: 0, // 進度值（0 到 1）
       paths: [], // 存儲所有路徑段，每個路徑段包含起點、終點和顏色
       scale: 1, // 縮放比例，動態計算
       lineWidth: 0.5,
@@ -27,12 +38,35 @@ export default {
     }
   },
   mounted() {
-    this.parseGCode(this.gcode)
-    this.renderPath()
+    this.startProcessing()
   },
   methods: {
+    async startProcessing() {
+      this.isProcessing = true
+      this.progress = 0
+
+      // 模擬進度更新
+      const updateProgress = (progress) => {
+        this.progress = progress
+        this.$emit('progress-updated', progress) // 將進度傳遞給父元件
+      }
+
+      // 模擬處理過程
+      for (let progress = 0; progress <= 1; progress += 0.1) {
+        await new Promise((resolve) => setTimeout(resolve, 500)) // 每 0.5 秒更新一次
+        updateProgress(progress)
+      }
+
+      // 執行原本的 method（渲染 canvas）
+      await this.parseGCode(this.gcode)
+      await this.renderPath()
+
+      this.isProcessing = false
+      this.$emit('processing-complete') // 通知父元件處理完成
+    },
+
     // 解析 G-code
-    parseGCode(gcode) {
+    async parseGCode(gcode) {
       // 去除空白行
       const lines = gcode
         .split('\n')
@@ -75,7 +109,7 @@ export default {
     },
 
     // 渲染路徑
-    renderPath() {
+    async renderPath() {
       const canvas = this.$refs.canvas
       const ctx = canvas.getContext('2d')
 
@@ -219,5 +253,17 @@ export default {
   width: 600px;
   height: 600px;
   border: 1px solid #ccc;
+}
+.full-height {
+  height: 100%;
+}
+.full-width {
+  width: 100%;
+}
+.gcode-viewer {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+  margin: auto; /* 確保 canvas 居中 */
 }
 </style>
