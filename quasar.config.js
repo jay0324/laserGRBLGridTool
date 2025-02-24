@@ -46,7 +46,9 @@ export default defineConfig((/* ctx */) => {
 
       // publicPath: '/',
       // analyze: true,
-      // env: {},
+      env: {
+        APP_VERSION: '0.0.1',
+      },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,

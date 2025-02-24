@@ -30,7 +30,6 @@ async function createWindow() {
         ),
       ),
       nodeIntegration: true, // 允許使用 Node.js API
-      autoHideMenuBar: true,
     },
   })
 
@@ -53,6 +52,9 @@ async function createWindow() {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+
+  //直接將畫面放到最大
+  mainWindow.maximize()
 }
 
 app.whenReady().then(createWindow)

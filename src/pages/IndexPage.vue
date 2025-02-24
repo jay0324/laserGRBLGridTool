@@ -2,8 +2,8 @@
   <q-page>
     <div class="column">
       <div class="q-pa-md col self-start" style="width: 20vw">
-        <q-input v-model="row" label="欄 (Y軸方向)" class="q-mb-sm" />
-        <q-input v-model="col" label="列 (X軸方向)" class="q-mb-sm" />
+        <q-input v-model="row" label="排 (Y軸方向)" type="number" min="0" class="q-mb-sm" />
+        <q-input v-model="col" label="列 (X軸方向)" type="number" min="0" class="q-mb-sm" />
         <q-btn
           label="排列"
           type="submit"
@@ -12,8 +12,20 @@
           @click="createGrid()"
         />
 
-        <q-input v-model="row_offset" class="q-mb-sm" label="Y軸各原點間位移距離(mm)" />
-        <q-input v-model="col_offset" class="q-mb-sm" label="X軸各原點間位移距離(mm)" />
+        <q-input
+          v-model="row_offset"
+          class="q-mb-sm"
+          type="number"
+          min="0"
+          label="Y軸各原點間位移距離(mm)"
+        />
+        <q-input
+          v-model="col_offset"
+          class="q-mb-sm"
+          type="number"
+          min="0"
+          label="X軸各原點間位移距離(mm)"
+        />
         <!-- 隱藏的 file input -->
         <input
           type="file"

@@ -2,9 +2,12 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-toolbar-title> LaserGRBL 排版工具 </q-toolbar-title>
+        <q-avatar>
+          <img src="~assets/logo.svg" />
+        </q-avatar>
+        <q-toolbar-title> LaserGRBL Grid Tool </q-toolbar-title>
 
-        <div>v{{ $q.version }}</div>
+        <div>v 0.0.1</div>
       </q-toolbar>
     </q-header>
 
