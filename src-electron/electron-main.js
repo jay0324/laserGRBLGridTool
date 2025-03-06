@@ -29,7 +29,10 @@ async function createWindow() {
           'electron-preload' + process.env.QUASAR_ELECTRON_PRELOAD_EXTENSION,
         ),
       ),
-      nodeIntegration: true, // 允許使用 Node.js API
+      webPreferences: {
+        nodeIntegration: true,
+      },
+      frame: false, //隱藏標題欄（包含按鈕）
     },
   })
 

@@ -11,7 +11,7 @@ export default defineConfig((/* ctx */) => {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: ['version', 'i18n'],
+    boot: process.env.MODE === 'electron' ? ['version', 'i18n'] : ['version', 'i18n', 'adsense'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
     css: ['app.scss'],
@@ -190,12 +190,11 @@ export default defineConfig((/* ctx */) => {
 
       builder: {
         // https://www.electron.build/configuration/configuration
-
         appId: 'com.keenchief.app', // 設定應用程式 ID
         win: {
-          target: 'nsis', // 產生 .exe 安裝程式
           icon: 'src-electron/icons/icon.ico',
         },
+        compression: 'maximum', // 最大壓縮
       },
       nodeIntegration: true, // 允許 Electron 使用 Node.js
     },

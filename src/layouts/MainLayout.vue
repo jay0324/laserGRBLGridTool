@@ -15,16 +15,21 @@
 
     <q-page-container>
       <router-view />
+
+      <!-- 加入 Google 廣告 -->
+      <!-- <GoogleAd /> -->
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
 import LanguageSwitcher from 'src/components/LanguageSwitcher.vue'
+// import GoogleAd from 'src/components/GoogleAd.vue'
 
 export default {
   components: {
     LanguageSwitcher,
+    // GoogleAd,
   },
 }
 </script>
