@@ -1,40 +1,21 @@
-# Tools (tools)
+# LaserGRBL Grid Tool
 
-Tools
+LaserGRBL Grid Tool is a tool for arrange laserGRBL G code into a table grid G Code
 
 ## Install the dependencies
+
 ```bash
-yarn
-# or
 npm install
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+## run app
+
 ```bash
-quasar dev
+npm run dev
 ```
 
+## build app
 
-### Lint the files
 ```bash
-yarn lint
-# or
-npm run lint
+npm run build
 ```
-
-
-### Format the files
-```bash
-yarn format
-# or
-npm run format
-```
-
-
-### Build the app for production
-```bash
-quasar build
-```
-
-### Customize the configuration
-See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).
