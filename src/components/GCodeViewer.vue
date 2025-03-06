@@ -3,7 +3,9 @@
     <!-- 載入訊息的 div -->
     <div v-if="isProcessing" class="column flex-center q-mb-md absolute-center">
       <q-linear-progress :value="progress" class="q-mt-md" style="width: 300px" />
-      <q-banner class="bg-blue-1 q-mt-md"> 處理進度：{{ Math.round(progress * 100) }}% </q-banner>
+      <q-banner class="bg-blue-1 q-mt-md">
+        {{ $t('progressMsg', { percent: Math.round(progress * 100) }) }}
+      </q-banner>
     </div>
 
     <!-- Canvas 元素 -->

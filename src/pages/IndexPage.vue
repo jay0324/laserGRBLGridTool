@@ -2,10 +2,10 @@
   <q-page>
     <div class="column">
       <div class="q-pa-md col self-start" style="width: 20vw">
-        <q-input v-model="row" label="排 (Y軸方向)" type="number" min="0" class="q-mb-sm" />
-        <q-input v-model="col" label="列 (X軸方向)" type="number" min="0" class="q-mb-sm" />
+        <q-input v-model="row" :label="$t('labelRow')" type="number" min="0" class="q-mb-sm" />
+        <q-input v-model="col" :label="$t('labelCol')" type="number" min="0" class="q-mb-sm" />
         <q-btn
-          label="排列"
+          :label="$t('labelGrid')"
           type="submit"
           color="primary"
           class="q-mb-sm q-mt-sm full-width"
@@ -17,14 +17,14 @@
           class="q-mb-sm"
           type="number"
           min="0"
-          label="Y軸各原點間位移距離(mm)"
+          :label="$t('labelYOffset')"
         />
         <q-input
           v-model="col_offset"
           class="q-mb-sm"
           type="number"
           min="0"
-          label="X軸各原點間位移距離(mm)"
+          :label="$t('labelXOffset')"
         />
         <!-- 隱藏的 file input -->
         <input
@@ -35,7 +35,7 @@
           @change="handleShareFileUpload"
         />
         <q-btn
-          label="統一NC檔"
+          :label="$t('labelUploadSameFile')"
           color="primary"
           class="q-mb-sm full-width"
           @click="openShareFile"
@@ -44,11 +44,11 @@
           {{ buttonUploadLabel }}
           <template v-slot:loading>
             <q-spinner-hourglass class="on-left" />
-            處理中...
+            {{ $t('progress') }}
           </template>
         </q-btn>
         <q-btn
-          label="合併G碼"
+          :label="$t('labelMergeGrid')"
           color="primary"
           class="q-mb-sm full-width"
           @click="writeNCFile()"
@@ -57,18 +57,18 @@
           {{ buttonLabel }}
           <template v-slot:loading>
             <q-spinner-hourglass class="on-left" />
-            處理中...
+            {{ $t('progress') }}
           </template>
         </q-btn>
         <q-btn
-          label="模擬G碼"
+          :label="$t('labelSimulate')"
           color="primary"
           class="q-mb-sm full-width"
           @click="gCodeSimulate('open', { content: outputContent })"
         />
-        <q-input v-model="fileName" label="匯出檔名" class="q-mb-sm" />
+        <q-input v-model="fileName" :label="$t('labelExportFileName')" class="q-mb-sm" />
         <q-btn
-          label="匯出NC檔"
+          :label="$t('labelExportFile')"
           color="secondary"
           @click="exportNCFile"
           class="q-mb-sm full-width"
@@ -83,10 +83,19 @@
           <div v-for="(rowItem, rowIndex) in files" :key="`row-${rowIndex}`" class="grid-row">
             <div v-for="(colItem, colIndex) in rowItem" :key="`col-${colIndex}`" class="grid-item">
               <q-label>
-                中心 x: {{ colIndex * col_offset }}, y: {{ rowIndex * row_offset }}</q-label
-              >
+                {{
+                  $t('gridPannel', {
+                    x: colIndex * col_offset,
+                    y: rowIndex * row_offset,
+                  })
+                }}
+              </q-label>
 
-              <q-label>檔案: {{ colItem.fileName ?? '未添加' }}</q-label>
+              <q-label>{{
+                $t('fileName', {
+                  name: colItem.fileName ?? '未添加',
+                })
+              }}</q-label>
 
               <!-- 隱藏的 file input -->
               <input
@@ -99,7 +108,7 @@
 
               <!-- 開啟 .nc 檔案按鈕 -->
               <q-btn
-                label="加入NC檔"
+                :label="$t('labelAddNcFile')"
                 color="primary"
                 @click="openFile(rowIndex, colIndex)"
                 class="q-mb-xs"
@@ -108,13 +117,13 @@
 
               <q-btn-group class="q-mb-xs">
                 <q-btn
-                  label="查看G碼"
+                  :label="$t('labelCheckCode')"
                   color="primary"
                   size="sm"
                   @click="gCodeViewer('open', colItem)"
                 />
                 <q-btn
-                  label="模擬G碼"
+                  :label="$t('labelSimulate')"
                   color="primary"
                   size="sm"
                   @click="gCodeSimulate('open', colItem)"
@@ -122,7 +131,7 @@
               </q-btn-group>
 
               <q-btn
-                label="清除此區"
+                :label="$t('labelClearArea')"
                 color="red"
                 @click="clearZone(rowIndex, colIndex)"
                 class="q-mb-xs"
@@ -137,12 +146,12 @@
     <q-dialog v-model="showGCode">
       <q-card class="dialog-card">
         <q-card-section>
-          <div class="text-h6">G碼瀏覽</div>
+          <div class="text-h6">{{ $t('labelCheckGcode') }}</div>
         </q-card-section>
 
         <div class="q-ma-md row no-wrap">
           <q-card bordered class="col my-card q-ma-sm">
-            <q-card-section> 原始 </q-card-section>
+            <q-card-section> {{ $t('originalGCode') }} </q-card-section>
 
             <q-separator inset />
 
@@ -161,7 +170,7 @@
           </q-card>
 
           <q-card bordered class="col my-card q-ma-sm">
-            <q-card-section> 改後 </q-card-section>
+            <q-card-section> {{ $t('modifyGCode') }} </q-card-section>
 
             <q-separator inset />
 
@@ -181,7 +190,7 @@
         </div>
 
         <q-card-actions class="close-btn">
-          <q-btn flat label="關閉" color="primary" @click="gCodeViewer('close', null)" />
+          <q-btn flat :label="$t('closed')" color="primary" @click="gCodeViewer('close', null)" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -189,7 +198,7 @@
     <q-dialog v-model="showGSD">
       <q-card class="dialog-card">
         <q-card-section>
-          <div class="text-h6">G碼模擬路徑</div>
+          <div class="text-h6">{{ $t('labelSimulate') }}</div>
         </q-card-section>
 
         <q-card-section class="column flex-center">
@@ -201,7 +210,7 @@
         </q-card-section>
 
         <q-card-actions class="close-btn">
-          <q-btn flat label="關閉" color="primary" @click="gCodeSimulate('close', null)" />
+          <q-btn flat :label="$t('closed')" color="primary" @click="gCodeSimulate('close', null)" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -211,10 +220,15 @@
 <script>
 import { useQuasar } from 'quasar'
 import GCodeViewer from 'components/GCodeViewer.vue'
+import { useI18n } from 'vue-i18n'
 
 export default {
   components: {
     GCodeViewer,
+  },
+  setup() {
+    const { t } = useI18n()
+    return { t }
   },
   data() {
     return {
@@ -243,10 +257,10 @@ export default {
   },
   computed: {
     buttonLabel() {
-      return this.isProcessing ? '合併G碼中...' : ''
+      return this.isProcessing ? this.t('mergeInProgress') : ''
     },
     buttonUploadLabel() {
-      return this.isProcessingUpload ? '上傳布局中...' : ''
+      return this.isProcessingUpload ? this.t('uploadGridInProgress') : ''
     },
   },
   mounted() {
@@ -261,7 +275,7 @@ export default {
     handleProcessingComplete() {
       this.$q.notify({
         type: 'positive',
-        message: '模擬完成！',
+        message: this.t('simulateDone'),
       })
     },
     openShareFile() {
@@ -273,7 +287,7 @@ export default {
       this.isProcessingUpload = true // 開始處理，顯示加載狀態
       this.$q.notify({
         type: 'warning',
-        message: '布局中...',
+        message: this.t('gridInProgress'),
       })
 
       // 等待 UI 更新完成
@@ -287,7 +301,7 @@ export default {
       if (!file) {
         this.$q.notify({
           type: 'negative',
-          message: '沒有選擇檔案！',
+          message: this.t('noFile'),
         })
         this.isProcessingUpload = false // 處理結束，隱藏加載狀態
         return
@@ -318,13 +332,13 @@ export default {
       } catch (error) {
         this.$q.notify({
           type: 'negative',
-          message: '布局失敗：' + error.message,
+          message: this.t('gridFail', { msg: error.message }),
         })
         this.isProcessingUpload = false // 處理結束，隱藏加載狀態
       } finally {
         this.$q.notify({
           type: 'positive',
-          message: '布局完成！',
+          message: this.t('gridDone'),
         })
         this.isProcessingUpload = false // 處理結束，隱藏加載狀態
       }
@@ -361,7 +375,7 @@ export default {
       if (fileInput) {
         fileInput.click()
       } else {
-        console.error(`找不到對應的 fileInput (row: ${rowIndex}, col: ${colIndex})`)
+        console.error(`Can't find linked fileInput (row: ${rowIndex}, col: ${colIndex})`)
       }
     },
 
@@ -411,7 +425,7 @@ export default {
       this.isProcessing = true // 開始處理，顯示加載狀態
       this.$q.notify({
         type: 'warning',
-        message: '合併中...',
+        message: this.t('mergeInProgress'),
       })
 
       // 等待 UI 更新完成
@@ -427,13 +441,13 @@ export default {
       } catch (error) {
         this.$q.notify({
           type: 'negative',
-          message: '合併失敗：' + error.message,
+          message: this.t('mergeFail', { msg: error.message }),
         })
         this.isProcessingUpload = false // 處理結束，隱藏加載狀態
       } finally {
         this.$q.notify({
           type: 'positive',
-          message: '合併完成！',
+          message: this.t('mergeDone'),
         })
         this.isProcessing = false // 處理結束，隱藏加載狀態
       }

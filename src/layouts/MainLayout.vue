@@ -5,9 +5,11 @@
         <q-avatar>
           <img src="~assets/logo.svg" />
         </q-avatar>
-        <q-toolbar-title> LaserGRBL Grid Tool </q-toolbar-title>
-
-        <div>v{{ $appVersion }}</div>
+        <q-toolbar-title>
+          {{ $t('appName') }}
+          <span class="text-overline">v{{ $appVersion }}</span>
+        </q-toolbar-title>
+        <LanguageSwitcher />
       </q-toolbar>
     </q-header>
 
@@ -16,3 +18,13 @@
     </q-page-container>
   </q-layout>
 </template>
+
+<script>
+import LanguageSwitcher from 'src/components/LanguageSwitcher.vue'
+
+export default {
+  components: {
+    LanguageSwitcher,
+  },
+}
+</script>
