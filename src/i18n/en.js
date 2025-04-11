@@ -29,4 +29,5 @@ export default {
   mergeFail: 'Merge failed: {msg}',
   mergeDone: 'Merge complete!',
   progressMsg: 'Simulate： {percent}%',
+  help: 'need some help?',
 }

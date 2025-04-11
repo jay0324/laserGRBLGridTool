@@ -9,7 +9,18 @@
           {{ $t('appName') }}
           <span class="text-overline">v{{ $appVersion }}</span>
         </q-toolbar-title>
+
         <LanguageSwitcher />
+
+        <q-btn
+          round
+          color="red"
+          href="https://github.com/jay0324/laserGRBLGridTool"
+          target="_blank"
+          class="q-ml-sm"
+          icon="help"
+          :title="$t('help')"
+        />
       </q-toolbar>
     </q-header>
 

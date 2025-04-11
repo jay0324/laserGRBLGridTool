@@ -29,4 +29,5 @@ export default {
   mergeFail: '合併失敗： {msg}',
   mergeDone: '合併完成！',
   progressMsg: '處理進度：{percent}%',
+  help: '需要幫助嗎?',
 }
